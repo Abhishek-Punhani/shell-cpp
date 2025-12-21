@@ -11,7 +11,10 @@ int main()
     {
         cout << "$ ";
         string input;
-        getline(cin, input);
+        if (!getline(cin, input))
+        {
+            break;
+        }
 
         if (input == "exit")
         {
