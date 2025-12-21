@@ -123,6 +123,7 @@ void handleEcho(const std::vector<std::string> &tokens)
             cout << " ";
         }
     }
+    cout << endl;
 }
 
 void handleType(const std::vector<std::string> &tokens)
