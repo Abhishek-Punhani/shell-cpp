@@ -54,6 +54,9 @@ void handleCommand(const std::vector<std::string>& tokens) {
     else if (tokens[0] == "pwd") {
         handlePwd();
     }
+    else if (tokens[0] == "cd") {
+        handleCd(tokens);
+    }
      else {
         string exec_path=is_executable(tokens[0]);
         if(!exec_path.empty()){
@@ -103,4 +106,31 @@ void handlePwd() {
     }
 }
 
+
+void handleCd(const std::vector<std::string>& tokens) {
+    if (tokens.size() < 2) {
+        cerr << "cd: missing operand" << endl;
+        return;
+    }
+    if(tokens.size()>2){
+        cerr<<"cd: too many arguments"<<endl;
+        return;
+    }
+    const string& path = tokens[1];
+    if(path=="~"){
+        const char* home = getenv("HOME");
+        if(home){
+            if (chdir(home) != 0) {
+                cerr << "cd: " << home << ": No such file or directory" << endl;
+            }
+        }else{
+            cerr<<"cd: HOME not set"<<endl;
+        }
+        return;
+    }
+    if (chdir(path.c_str()) != 0) {
+        cerr << "cd: " << path << ": No such file or directory" << endl;
+    }
+
+}
 
