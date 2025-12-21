@@ -68,6 +68,22 @@ void handleCommand(const std::vector<std::string>& tokens) {
 }
 
 void handleEcho(const std::vector<std::string>& tokens) {
+    if (tokens.size() < 2) {
+        cout << endl;
+        return;
+    }
+    if(tokens[1][0]=='\'' && tokens.back().back()=='\''){
+        string output;
+        for(size_t i=1;i<tokens.size();++i){
+            output+=tokens[i];
+            if(i<tokens.size()-1){
+                output+=" ";
+            }
+        }
+        output=output.substr(1,output.size()-2);
+        cout<<output<<endl;
+        return;
+    }
     for (size_t i = 1; i < tokens.size(); ++i) {
         cout << tokens[i];
         if (i < tokens.size() - 1) {
