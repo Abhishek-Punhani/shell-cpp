@@ -2,7 +2,7 @@
 #include"headers/commands.hpp"
 using namespace std;
 
-vector<string> shell_builtin_commands={"echo","type"};
+vector<string> shell_builtin_commands={"echo","type","exit"};
 
 void handleCommand(const std::vector<std::string>& tokens) {
     if (tokens[0] == "echo") {
