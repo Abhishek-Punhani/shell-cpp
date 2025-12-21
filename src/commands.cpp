@@ -109,8 +109,10 @@ void handleEcho(const std::vector<std::string> &tokens)
 
             if (!token.empty())
             {
-                cout << token << endl;
-            }else continue;
+                cout << token;
+            }
+            else
+                continue;
         }
         else
         {
