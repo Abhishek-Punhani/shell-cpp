@@ -1,13 +1,14 @@
 #include<bits/stdc++.h>
+#include"headers/commands.hpp"
 using namespace std;
 int main() {
-  // Flush after every std::cout / std:cerr
   cout << std::unitbuf;
   cerr << std::unitbuf;
   while (true)
   {
     cout << "$ ";
     string input;
+
     getline(cin, input);
     if (input == "exit") {
       break;
@@ -21,14 +22,9 @@ int main() {
     if (tokens.empty()) {
       continue;
     }
-    if(tokens[0]=="echo"){
-      for(size_t i=1;i<tokens.size();i++){
-        cout<<tokens[i];
-        if(i!=tokens.size()-1)cout<<" ";
-      }
-      cout<<endl;
-      continue;
-    }
+
+    handleCommand(tokens);
+   
     cout << input << ": command not found" << endl;
 
   }
