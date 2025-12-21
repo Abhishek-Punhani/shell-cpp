@@ -72,23 +72,17 @@ void handleEcho(const std::vector<std::string>& tokens) {
         cout << endl;
         return;
     }
-    if(tokens[1][0]=='\'' && tokens.back().back()=='\''){
-        string output;
-        for(size_t i=1;i<tokens.size();++i){
-            output+=tokens[i];
-            if(i<tokens.size()-1){
-                output+=" ";
-            }
-        }
-        output=output.substr(1,output.size()-2);
-        cout<<output<<endl;
-        return;
-    }
+    
     for (size_t i = 1; i < tokens.size(); ++i) {
+        if(tokens[i].length()>=2 && tokens[i][0]=='\'' && tokens[i][tokens[i].length()-1]=='\''){
+            cout << tokens[i].substr(1,tokens[i].length()-2);
+        }else{
         cout << tokens[i];
+        }
         if (i < tokens.size() - 1) {
             cout << " ";
         }
+
     }
     cout << endl;
 }
