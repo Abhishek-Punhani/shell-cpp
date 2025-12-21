@@ -38,8 +38,7 @@ int main()
             {
                 in_quotes = false;
                 token += c; // Include the quote
-                if (!token.substr(1,token.length()-2).empty())
-                    tokens.push_back(token);
+                tokens.push_back(token);
                 token.clear();
             }
             else if (isspace(c) && !in_quotes)

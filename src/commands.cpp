@@ -5,7 +5,9 @@
 using namespace std;
 
 vector<string> shell_builtin_commands = {"echo", "type", "exit", "pwd", "cd"};
-
+bool isQuoted(const string &token){
+   return token.length() >= 2 && token[0] == '\'' && token[token.length() - 1] == '\'';
+}
 string is_executable(const string &token)
 {
     const char *path = getenv("PATH");
@@ -93,18 +95,15 @@ void handleEcho(const std::vector<std::string> &tokens)
     }
     for (size_t i = 1; i < tokens.size(); ++i)
     {
-        if (tokens[i].length() >= 2 && tokens[i][0] == '\'' && tokens[i][tokens[i].length() - 1] == '\'')
-        {
-            cout << tokens[i].substr(1, tokens[i].length() - 2);
-            if (i < tokens.size() - 1)
-            {
-                cout << " ";
-            }
+        if (isQuoted(tokens[i]))
+        {   string token=tokens[i].substr(1, tokens[i].length() - 2);
+           if(!token.empty()) cout << token;
         }
         else
         {
-            cout << tokens[i];
+           cout << tokens[i];
         }
+        if(i+1<tokens.size() && (isQuoted(tokens[i])&&(isQuoted(tokens[i+1]))));
     }
     cout << endl;
 }
