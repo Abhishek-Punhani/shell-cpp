@@ -4,7 +4,7 @@
 #include <sys/wait.h>
 using namespace std;
 
-vector<string> shell_builtin_commands={"echo","type","exit"};
+vector<string> shell_builtin_commands={"echo","type","exit","pwd","cd"};
 
 string is_executable(const string &token) {
     const char* path = getenv("PATH");
