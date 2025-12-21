@@ -36,7 +36,7 @@ void handleType(const std::vector<std::string>& tokens) {
     if(shell_builtin_commands.end()!=find(shell_builtin_commands.begin(),shell_builtin_commands.end(),token)){
         cout<<token<<" is a shell builtin"<<endl;
     }else{
-        cout<<token<<": command not found" << endl;
+        cout<<token<<": not found" << endl;
     }
 
 }
