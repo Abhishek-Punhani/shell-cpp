@@ -5,8 +5,13 @@
 using namespace std;
 
 vector<string> shell_builtin_commands = {"echo", "type", "exit", "pwd", "cd"};
-bool isQuoted(const string &token){
-   return token.length() >= 2 && token[0] == '\'' && token[token.length() - 1] == '\'';
+bool isQuoted(const string &token)
+{
+    return token.length() >= 2 && token[0] == '\'' && token[token.length() - 1] == '\'';
+}
+bool isEmptyQuoted(const string &token)
+{
+    return token.length() >= 2 && token[0] == '\'' && token[token.length() - 1] == '\'' && (token.substr(1, token.length() - 2).empty());
 }
 string is_executable(const string &token)
 {
@@ -95,15 +100,26 @@ void handleEcho(const std::vector<std::string> &tokens)
     }
     for (size_t i = 1; i < tokens.size(); ++i)
     {
+    }
+    for (size_t i = 1; i < tokens.size(); ++i)
+    {
         if (isQuoted(tokens[i]))
-        {   string token=tokens[i].substr(1, tokens[i].length() - 2);
-           if(!token.empty()) cout << token;
+        {
+            string token = tokens[i].substr(1, tokens[i].length() - 2);
+
+            if (!token.empty())
+            {
+                cout << token << endl;
+            }else continue;
         }
         else
         {
-           cout << tokens[i];
+            cout << tokens[i];
         }
-        if(i+1<tokens.size() && (isQuoted(tokens[i])&&(isQuoted(tokens[i+1]))));
+        if (i + 1 < tokens.size() && !(isQuoted(tokens[i]) && (isQuoted(tokens[i + 1]))) && !isEmptyQuoted(tokens[i + 1]))
+        {
+            cout << " ";
+        }
     }
     cout << endl;
 }
