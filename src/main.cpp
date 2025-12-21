@@ -24,9 +24,6 @@ int main() {
     }
 
     handleCommand(tokens);
-   
-    cout << input << ": command not found" << endl;
-
   }
   
   }
