@@ -51,6 +51,9 @@ void handleCommand(const std::vector<std::string>& tokens) {
     else if (tokens[0] == "type") {
         handleType(tokens);
     }
+    else if (tokens[0] == "pwd") {
+        handlePwd();
+    }
      else {
         string exec_path=is_executable(tokens[0]);
         if(!exec_path.empty()){
@@ -90,4 +93,14 @@ void handleType(const std::vector<std::string>& tokens) {
     }
 
 }
+
+void handlePwd() {
+    char cwd[1024];
+    if (getcwd(cwd, sizeof(cwd)) != nullptr) {
+        cout << cwd << endl;
+    } else {
+        cerr << "pwd: failed to get current directory" << endl;
+    }
+}
+
 
