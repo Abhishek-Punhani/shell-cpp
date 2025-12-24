@@ -68,12 +68,32 @@ string parse_single_qoutes(const vector<string> &tokens)
 void execute_executables(const string &exec_path, const vector<string> &tokens)
 {
     pid_t pid = fork();
-    string arg_string = parse_single_qoutes(tokens);
     if (pid == 0)
     { // Child process
+        vector<string> processed_args;
         vector<char *> args;
-        args.push_back(const_cast<char *>(arg_string.c_str()));
+
+        // argv[0] is the command name
+        args.push_back(const_cast<char *>(tokens[0].c_str()));
+
+        // Process arguments individually to preserve spaces within quotes
+        for (size_t i = 1; i < tokens.size(); ++i)
+        {
+            string token = tokens[i];
+            if (isQuoted(token))
+            {
+                token = token.substr(1, token.length() - 2);
+            }
+            processed_args.push_back(token);
+        }
+
+        // Convert string vector to char* vector for execv
+        for (auto &arg : processed_args)
+        {
+            args.push_back(const_cast<char *>(arg.c_str()));
+        }
         args.push_back(nullptr);
+
         execv(exec_path.c_str(), args.data());
         // If execv returns, an error occurred
         cerr << "Failed to execute " << exec_path << endl;
