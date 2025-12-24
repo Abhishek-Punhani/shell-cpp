@@ -58,6 +58,11 @@ int main()
                     in_backslash = true;
                     continue;
                 }
+                else
+                {
+                    token += c;
+                    continue;
+                }
             }
             if ((c == '\'' || c == '"') && !in_quotes)
             {
