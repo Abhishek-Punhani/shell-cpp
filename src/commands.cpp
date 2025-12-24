@@ -100,9 +100,6 @@ void handleEcho(const std::vector<std::string> &tokens)
     }
     for (size_t i = 1; i < tokens.size(); ++i)
     {
-    }
-    for (size_t i = 1; i < tokens.size(); ++i)
-    {
         if (isQuoted(tokens[i]))
         {
             string token = tokens[i].substr(1, tokens[i].length() - 2);
@@ -118,7 +115,7 @@ void handleEcho(const std::vector<std::string> &tokens)
         {
             cout << tokens[i];
         }
-        if (i + 1 < tokens.size() && !(isQuoted(tokens[i]) && (isQuoted(tokens[i + 1]))) && !isEmptyQuoted(tokens[i + 1]))
+        if (i + 1 < tokens.size() && (!isEmptyQuoted(tokens[i + 1])))
         {
             cout << " ";
         }
