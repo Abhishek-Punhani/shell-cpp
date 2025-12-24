@@ -63,11 +63,12 @@ void execute_executables(const string &exec_path, const vector<string> &tokens)
         // argv[0] is the command name
         args.push_back(const_cast<char *>(tokens[0].c_str()));
 
-        // Process arguments individually to preserve spaces within quotes
+        // Process arguments individually using parse_qoutes logic
         for (size_t i = 1; i < tokens.size(); ++i)
         {
-            string token = tokens[i];
-            processed_args.push_back(token);
+            vector<string> single_arg_vec = {"placeholder", tokens[i]};
+            string processed_token = parse_qoutes(single_arg_vec);
+            processed_args.push_back(processed_token);
         }
 
         // Convert string vector to char* vector for execv
@@ -83,7 +84,7 @@ void execute_executables(const string &exec_path, const vector<string> &tokens)
         exit(1);
     }
     else if (pid > 0)
-    { // Parent process
+        { // Parent process
         int status;
         waitpid(pid, &status, 0);
     }
@@ -93,112 +94,112 @@ void execute_executables(const string &exec_path, const vector<string> &tokens)
     }
 }
 
-void handleCommand(const std::vector<std::string> &tokens)
-{
-    if (tokens[0] == "echo")
-    {
-        handleEcho(tokens);
-    }
-    else if (tokens[0] == "type")
-    {
-        handleType(tokens);
-    }
-    else if (tokens[0] == "pwd")
-    {
-        handlePwd();
-    }
-    else if (tokens[0] == "cd")
-    {
-        handleCd(tokens);
-    }
-    else
-    {
-        string exec_path = is_executable(tokens[0]);
-        if (!exec_path.empty())
+        void handleCommand(const std::vector<std::string> &tokens)
         {
-            execute_executables(exec_path, tokens);
-            return;
-        }
-        cout << tokens[0] << ": command not found" << endl;
-    }
-}
-
-void handleEcho(const std::vector<std::string> &tokens)
-{
-    cout << parse_qoutes(tokens) << endl;
-}
-
-void handleType(const std::vector<std::string> &tokens)
-{
-    if (tokens.size() < 2)
-    {
-        cout << "type: missing operand" << endl;
-        return;
-    }
-
-    const string token = tokens[1];
-    if (shell_builtin_commands.end() != find(shell_builtin_commands.begin(), shell_builtin_commands.end(), token))
-    {
-        cout << token << " is a shell builtin" << endl;
-    }
-    else
-    {
-        string exec_path = is_executable(token);
-        if (!exec_path.empty())
-        {
-            cout << token << " is " << exec_path << endl;
-        }
-        else
-        {
-            cout << token << ": not found" << endl;
-        }
-    }
-}
-
-void handlePwd()
-{
-    char cwd[1024];
-    if (getcwd(cwd, sizeof(cwd)) != nullptr)
-    {
-        cout << cwd << endl;
-    }
-    else
-    {
-        cerr << "pwd: failed to get current directory" << endl;
-    }
-}
-
-void handleCd(const std::vector<std::string> &tokens)
-{
-    if (tokens.size() < 2)
-    {
-        cerr << "cd: missing operand" << endl;
-        return;
-    }
-    if (tokens.size() > 2)
-    {
-        cerr << "cd: too many arguments" << endl;
-        return;
-    }
-    const string &path = tokens[1];
-    if (path == "~")
-    {
-        const char *home = getenv("HOME");
-        if (home)
-        {
-            if (chdir(home) != 0)
+            if (tokens[0] == "echo")
             {
-                cerr << "cd: " << home << ": No such file or directory" << endl;
+                handleEcho(tokens);
+            }
+            else if (tokens[0] == "type")
+            {
+                handleType(tokens);
+            }
+            else if (tokens[0] == "pwd")
+            {
+                handlePwd();
+            }
+            else if (tokens[0] == "cd")
+            {
+                handleCd(tokens);
+            }
+            else
+            {
+                string exec_path = is_executable(tokens[0]);
+                if (!exec_path.empty())
+                {
+                    execute_executables(exec_path, tokens);
+                    return;
+                }
+                cout << tokens[0] << ": command not found" << endl;
             }
         }
+
+    void handleEcho(const std::vector<std::string> &tokens)
+    {
+        cout << parse_qoutes(tokens) << endl;
+    }
+
+    void handleType(const std::vector<std::string> &tokens)
+    {
+        if (tokens.size() < 2)
+        {
+            cout << "type: missing operand" << endl;
+            return;
+        }
+
+        const string token = tokens[1];
+        if (shell_builtin_commands.end() != find(shell_builtin_commands.begin(), shell_builtin_commands.end(), token))
+        {
+            cout << token << " is a shell builtin" << endl;
+        }
         else
         {
-            cerr << "cd: HOME not set" << endl;
+            string exec_path = is_executable(token);
+            if (!exec_path.empty())
+            {
+                cout << token << " is " << exec_path << endl;
+            }
+            else
+            {
+                cout << token << ": not found" << endl;
+            }
         }
-        return;
     }
-    if (chdir(path.c_str()) != 0)
+
+    void handlePwd()
     {
-        cerr << "cd: " << path << ": No such file or directory" << endl;
+        char cwd[1024];
+        if (getcwd(cwd, sizeof(cwd)) != nullptr)
+        {
+            cout << cwd << endl;
+        }
+        else
+        {
+            cerr << "pwd: failed to get current directory" << endl;
+        }
     }
-}
+
+    void handleCd(const std::vector<std::string> &tokens)
+    {
+        if (tokens.size() < 2)
+        {
+            cerr << "cd: missing operand" << endl;
+            return;
+        }
+        if (tokens.size() > 2)
+        {
+            cerr << "cd: too many arguments" << endl;
+            return;
+        }
+        const string &path = tokens[1];
+        if (path == "~")
+        {
+            const char *home = getenv("HOME");
+            if (home)
+            {
+                if (chdir(home) != 0)
+                {
+                    cerr << "cd: " << home << ": No such file or directory" << endl;
+                }
+            }
+            else
+            {
+                cerr << "cd: HOME not set" << endl;
+            }
+            return;
+        }
+        if (chdir(path.c_str()) != 0)
+        {
+            cerr << "cd: " << path << ": No such file or directory" << endl;
+        }
+    }

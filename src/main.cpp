@@ -30,13 +30,14 @@ int main()
         {
             char c = input[i];
             if (in_backslash)
-            {   
+            {
                 token += c;
                 in_backslash = false;
                 continue;
             }
             if (c == '\\')
-            {   
+            {
+
                 in_backslash = true;
                 continue;
             }
