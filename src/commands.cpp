@@ -5,13 +5,9 @@
 using namespace std;
 
 vector<string> shell_builtin_commands = {"echo", "type", "exit", "pwd", "cd"};
-bool isQuoted(const string &token)
-{
-    return token.length() >= 2 && ((token[0] == '\'' && token[token.length() - 1] == '\'')||(token[0] == '"' && token[token.length() - 1] == '"'));
-}
 bool isEmptyQuoted(const string &token)
 {
-    return token.length() >= 2 && ((token[0] == '\'' && token[token.length() - 1] == '\'')||(token[0] == '"' && token[token.length() - 1] == '"')) && (token.substr(1, token.length() - 2).empty());
+    return token.length() >= 2 && ((token[0] == '\'' && token[1] == '\'') || (token[0] == '"' && token[1] == '"')) && (token.substr(1, token.length() - 2).empty());
 }
 string is_executable(const string &token)
 {
@@ -34,7 +30,7 @@ string is_executable(const string &token)
     return "";
 }
 
-string parse_single_qoutes(const vector<string> &tokens)
+string parse_qoutes(const vector<string> &tokens)
 {
     string res = "";
     if (tokens.size() < 2)
@@ -43,18 +39,9 @@ string parse_single_qoutes(const vector<string> &tokens)
     }
     for (size_t i = 1; i < tokens.size(); ++i)
     {
-        if (isQuoted(tokens[i]))
-        {
-            string token = tokens[i].substr(1, tokens[i].length() - 2);
-
-            if (!token.empty())
-            {
-                res += token;
-            }
-            else
-                continue;
-        }
-        else
+        if (isEmptyQuoted(tokens[i]))
+            continue;
+        if (!tokens[i].empty())
         {
             res += tokens[i];
         }
@@ -80,10 +67,6 @@ void execute_executables(const string &exec_path, const vector<string> &tokens)
         for (size_t i = 1; i < tokens.size(); ++i)
         {
             string token = tokens[i];
-            if (isQuoted(token))
-            {
-                token = token.substr(1, token.length() - 2);
-            }
             processed_args.push_back(token);
         }
 
@@ -142,7 +125,7 @@ void handleCommand(const std::vector<std::string> &tokens)
 
 void handleEcho(const std::vector<std::string> &tokens)
 {
-    cout << parse_single_qoutes(tokens) << endl;
+    cout << parse_qoutes(tokens) << endl;
 }
 
 void handleType(const std::vector<std::string> &tokens)

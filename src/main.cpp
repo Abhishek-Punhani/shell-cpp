@@ -24,34 +24,48 @@ int main()
         vector<string> tokens;
         string token;
         bool in_quotes = false;
-        bool in_double_quotes=false;
+        bool in_double_quotes = false;
+        bool in_backslash = false;
         for (size_t i = 0; i < input.length(); ++i)
         {
             char c = input[i];
-            if (i > 0 && ((input[i] == '\'' && !in_quotes && input[i - 1] == '\'' )|| (input[i] == '"' && !in_quotes && input[i - 1] == '"' )))
+            if (in_backslash)
+            {   
+                if(c=='\'' || c=='"')token+='\\';
+                token += c;
+                in_backslash = false;
+                continue;
+            }
+            if (c == '\\')
+            {   
+                in_backslash = true;
+                continue;
+            }
+            if (i > 0 && ((input[i] == '\'' && !in_quotes && input[i - 1] == '\'') || (input[i] == '"' && !in_quotes && input[i - 1] == '"')))
             {
                 tokens.push_back("''");
             }
 
-            if ((c == '\'' || c=='"') && !in_quotes)
-            {   if(c=='"') in_double_quotes=true;
+            if ((c == '\'' || c == '"') && !in_quotes)
+            {
+                if (c == '"')
+                    in_double_quotes = true;
                 if (!token.empty())
                 {
                     tokens.push_back(token);
                     token.clear();
                 }
                 in_quotes = true;
-                token += c; // Include the quote
             }
-            else if ((c == '\'' || c=='"') && in_quotes)
-            {   
-                if(c == '\'' && in_double_quotes){
-                    token+=c;
+            else if ((c == '\'' || c == '"') && in_quotes)
+            {
+                if (c == '\'' && in_double_quotes)
+                {
+                    token += c;
                     continue;
                 }
                 in_quotes = false;
-                in_double_quotes=false;
-                token += c; // Include the quote
+                in_double_quotes = false;
                 tokens.push_back(token);
                 token.clear();
             }
