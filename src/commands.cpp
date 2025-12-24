@@ -7,11 +7,11 @@ using namespace std;
 vector<string> shell_builtin_commands = {"echo", "type", "exit", "pwd", "cd"};
 bool isQuoted(const string &token)
 {
-    return token.length() >= 2 && token[0] == '\'' && token[token.length() - 1] == '\'';
+    return token.length() >= 2 && ((token[0] == '\'' && token[token.length() - 1] == '\'')||(token[0] == '"' && token[token.length() - 1] == '"'));
 }
 bool isEmptyQuoted(const string &token)
 {
-    return token.length() >= 2 && token[0] == '\'' && token[token.length() - 1] == '\'' && (token.substr(1, token.length() - 2).empty());
+    return token.length() >= 2 && ((token[0] == '\'' && token[token.length() - 1] == '\'')||(token[0] == '"' && token[token.length() - 1] == '"')) && (token.substr(1, token.length() - 2).empty());
 }
 string is_executable(const string &token)
 {
