@@ -78,6 +78,11 @@ int main()
                     token += c;
                     continue;
                 }
+                if (c == '"' && in_quotes && !in_double_quotes)
+                {
+                    token += c;
+                    continue;
+                }
                 in_quotes = false;
                 in_double_quotes = false;
             }
