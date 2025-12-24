@@ -34,16 +34,45 @@ string is_executable(const string &token)
     return "";
 }
 
+string parse_single_qoutes(const vector<string> &tokens)
+{
+    string res = "";
+    if (tokens.size() < 2)
+    {
+        return res;
+    }
+    for (size_t i = 1; i < tokens.size(); ++i)
+    {
+        if (isQuoted(tokens[i]))
+        {
+            string token = tokens[i].substr(1, tokens[i].length() - 2);
+
+            if (!token.empty())
+            {
+                res += token;
+            }
+            else
+                continue;
+        }
+        else
+        {
+            res += tokens[i];
+        }
+        if (i + 1 < tokens.size() && (!isEmptyQuoted(tokens[i + 1])))
+        {
+            res += " ";
+        }
+    }
+    return res;
+}
 void execute_executables(const string &exec_path, const vector<string> &tokens)
 {
     pid_t pid = fork();
+    string arg_string = parse_single_qoutes(tokens);
     if (pid == 0)
     { // Child process
         vector<char *> args;
-        for (const auto &token : tokens)
-        {
-            args.push_back(const_cast<char *>(token.c_str()));
-        }
+        args.push_back(const_cast<char *>(arg_string.c_str()));
         args.push_back(nullptr);
         execv(exec_path.c_str(), args.data());
         // If execv returns, an error occurred
@@ -93,34 +122,7 @@ void handleCommand(const std::vector<std::string> &tokens)
 
 void handleEcho(const std::vector<std::string> &tokens)
 {
-    if (tokens.size() < 2)
-    {
-        cout << endl;
-        return;
-    }
-    for (size_t i = 1; i < tokens.size(); ++i)
-    {
-        if (isQuoted(tokens[i]))
-        {
-            string token = tokens[i].substr(1, tokens[i].length() - 2);
-
-            if (!token.empty())
-            {
-                cout << token;
-            }
-            else
-                continue;
-        }
-        else
-        {
-            cout << tokens[i];
-        }
-        if (i + 1 < tokens.size() && (!isEmptyQuoted(tokens[i + 1])))
-        {
-            cout << " ";
-        }
-    }
-    cout << endl;
+    cout << parse_single_qoutes(tokens) << endl;
 }
 
 void handleType(const std::vector<std::string> &tokens)
