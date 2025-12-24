@@ -26,36 +26,45 @@ int main()
         bool in_quotes = false;
         bool in_double_quotes = false;
         bool in_backslash = false;
+        bool token_has_quotes = false;
         for (size_t i = 0; i < input.length(); ++i)
         {
             char c = input[i];
             if (in_backslash)
             {
-                token += c;
+                if (in_double_quotes)
+                {
+                    if (c == '$' || c == '`' || c == '"' || c == '\\' || c == '\n')
+                    {
+                        token += c;
+                    }
+                    else
+                    {
+                        token += '\\';
+                        token += c;
+                    }
+                }
+                else
+                {
+                    token += c;
+                }
                 in_backslash = false;
                 continue;
             }
             if (c == '\\')
             {
-
-                in_backslash = true;
-                continue;
+                if (!in_quotes || in_double_quotes)
+                {
+                    in_backslash = true;
+                    continue;
+                }
             }
-            if (i > 0 && ((input[i] == '\'' && !in_quotes && input[i - 1] == '\'') || (input[i] == '"' && !in_quotes && input[i - 1] == '"')))
-            {
-                tokens.push_back("''");
-            }
-
             if ((c == '\'' || c == '"') && !in_quotes)
             {
                 if (c == '"')
                     in_double_quotes = true;
-                if (!token.empty())
-                {
-                    tokens.push_back(token);
-                    token.clear();
-                }
                 in_quotes = true;
+                token_has_quotes = true;
             }
             else if ((c == '\'' || c == '"') && in_quotes)
             {
@@ -66,15 +75,14 @@ int main()
                 }
                 in_quotes = false;
                 in_double_quotes = false;
-                tokens.push_back(token);
-                token.clear();
             }
             else if (isspace(c) && !in_quotes)
             {
-                if (!token.empty())
+                if (!token.empty() || token_has_quotes)
                 {
                     tokens.push_back(token);
                     token.clear();
+                    token_has_quotes = false;
                 }
             }
             else
@@ -82,7 +90,7 @@ int main()
                 token += c;
             }
         }
-        if (!token.empty())
+        if (!token.empty() || token_has_quotes)
         {
             tokens.push_back(token);
         }
