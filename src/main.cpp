@@ -31,7 +31,6 @@ int main()
             char c = input[i];
             if (in_backslash)
             {   
-                if(c=='\'' || c=='"')token+='\\';
                 token += c;
                 in_backslash = false;
                 continue;
