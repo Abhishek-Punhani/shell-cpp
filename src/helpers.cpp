@@ -10,12 +10,12 @@ using namespace std;
 
 void pushToken(string &token, vector<string> &tokens, bool &redirect_stdout, bool &redirect_stderr, bool &override, ExecutionResult &prev_res)
 {
-    if (token == ">" || token == "1>" || token == ">>")
+    if (token == ">" || token == "1>" || token == ">>" || token == "1>>")
     {
         redirect_stdout = true;
         prev_res = handleCommand(tokens, redirect_stdout, redirect_stderr);
         tokens.clear();
-        if (token == ">>")
+        if (token == ">>" || token == "1>>")
             override = true;
     }
     else if (token == "2>" || token == "2>>")
