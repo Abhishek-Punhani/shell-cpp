@@ -93,8 +93,6 @@ int main()
                 {
                     pushToken(token, tokens, redirect_stdout, redirect_stderr, prev_res);
                 }
-                else
-                    token += c;
             }
             else
             {
