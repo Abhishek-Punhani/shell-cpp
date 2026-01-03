@@ -28,7 +28,8 @@ int main()
         bool in_backslash = false;
         bool redirect_stdout = false;
         bool redirect_stderr = false;
-        bool to_append=false;
+        bool override_stdout = false;
+        bool override_stderr = false;
         ExecutionResult prev_res{"", "", -1};
         for (size_t i = 0; i < input.length(); ++i)
         {
@@ -92,7 +93,7 @@ int main()
             {
                 if (!token.empty())
                 {
-                    pushToken(token, tokens, redirect_stdout, redirect_stderr,to_append, prev_res);
+                    pushToken(token, tokens, redirect_stdout, redirect_stderr, override_stdout, override_stderr, prev_res);
                 }
             }
             else
@@ -102,7 +103,7 @@ int main()
         }
         if (!token.empty() || in_quotes)
         {
-            pushToken(token, tokens, redirect_stdout, redirect_stderr,to_append, prev_res);
+            pushToken(token, tokens, redirect_stdout, redirect_stderr, override_stdout, override_stderr, prev_res);
         }
 
         if (tokens.empty())
@@ -111,11 +112,13 @@ int main()
         }
         if (redirect_stderr)
         {
-            write_execution_result_to_file(prev_res, tokens[0], true,to_append);
+            write_execution_result_to_file(prev_res, tokens[0], true, override_stderr);
+            redirect_stderr = override_stderr = false;
         }
         else if (redirect_stdout)
         {
-            write_execution_result_to_file(prev_res, tokens[0], false,to_append);
+            write_execution_result_to_file(prev_res, tokens[0], false, override_stdout);
+            redirect_stdout = override_stdout = false;
         }
         else
             handleCommand(tokens, redirect_stdout, redirect_stderr);

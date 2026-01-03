@@ -8,7 +8,7 @@
 
 using namespace std;
 
-void pushToken(string &token, vector<string> &tokens, bool &redirect_stdout, bool &redirect_stderr, bool &override, ExecutionResult &prev_res)
+void pushToken(string &token, vector<string> &tokens, bool &redirect_stdout, bool &redirect_stderr, bool &override_stdout, bool &override_stderr, ExecutionResult &prev_res)
 {
     if (token == ">" || token == "1>" || token == ">>" || token == "1>>")
     {
@@ -16,7 +16,7 @@ void pushToken(string &token, vector<string> &tokens, bool &redirect_stdout, boo
         prev_res = handleCommand(tokens, redirect_stdout, redirect_stderr);
         tokens.clear();
         if (token == ">>" || token == "1>>")
-            override = true;
+            override_stdout = true;
     }
     else if (token == "2>" || token == "2>>")
     {
@@ -24,7 +24,7 @@ void pushToken(string &token, vector<string> &tokens, bool &redirect_stdout, boo
         prev_res = handleCommand(tokens, redirect_stdout, redirect_stderr);
         tokens.clear();
         if (token == "2>>")
-            override = true;
+            override_stderr = true;
     }
     else
     {
@@ -147,10 +147,7 @@ ExecutionResult execute_executables(const string &exec_path, const vector<string
     return ExecutionResult{stdout_out, stderr_out, exit_code};
 }
 
-void write_execution_result_to_file(
-    const ExecutionResult &result,
-    const std::string &path,
-    bool is_err, bool override)
+void write_execution_result_to_file(const ExecutionResult &result, const std::string &path, bool is_err, bool override)
 {
     int flags = O_WRONLY | O_CREAT;
     if (override)
