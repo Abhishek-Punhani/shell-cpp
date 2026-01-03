@@ -8,19 +8,23 @@
 
 using namespace std;
 
-void pushToken(string &token, vector<string> &tokens, bool &redirect_stdout, bool &redirect_stderr, ExecutionResult &prev_res)
+void pushToken(string &token, vector<string> &tokens, bool &redirect_stdout, bool &redirect_stderr, bool &override, ExecutionResult &prev_res)
 {
-    if (token == ">" || token == "1>")
+    if (token == ">" || token == "1>" || token == ">>")
     {
         redirect_stdout = true;
         prev_res = handleCommand(tokens, redirect_stdout, redirect_stderr);
         tokens.clear();
+        if (token == ">>")
+            override = true;
     }
-    else if (token == "2>")
+    else if (token == "2>" || token == "2>>")
     {
         redirect_stderr = true;
         prev_res = handleCommand(tokens, redirect_stdout, redirect_stderr);
         tokens.clear();
+        if (token == "2>>")
+            override = true;
     }
     else
     {
@@ -146,11 +150,18 @@ ExecutionResult execute_executables(const string &exec_path, const vector<string
 void write_execution_result_to_file(
     const ExecutionResult &result,
     const std::string &path,
-    bool is_err)
+    bool is_err, bool override)
 {
+    int flags = O_WRONLY | O_CREAT;
+    if (override)
+    {
+        flags |= O_TRUNC;
+    }
+    else
+        flags |= O_APPEND;
     int fd = open(
         path.c_str(),
-        O_WRONLY | O_CREAT | O_APPEND,
+
         0644);
 
     if (fd == -1)

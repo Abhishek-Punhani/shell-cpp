@@ -24,6 +24,6 @@ bool isEmptyQuoted(const string &token);
 string is_executable(const string &token);
 string parse_qoutes(const vector<string> &tokens);
 ExecutionResult execute_executables(const string &exec_path, const vector<string> &tokens);
-void pushToken(string &token, vector<string> &tokens, bool &redirect_stdout, bool &redirect_stderr, ExecutionResult &prev_res);
-void write_execution_result_to_file(const ExecutionResult &result, const std::string &path, bool is_err);
+void pushToken(string &token, vector<string> &tokens, bool &redirect_stdout, bool &redirect_stderr, bool &override, ExecutionResult &prev_res);
+void write_execution_result_to_file(const ExecutionResult &result, const std::string &path, bool is_err , bool override);
 #endif
