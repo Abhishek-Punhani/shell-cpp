@@ -161,7 +161,7 @@ void write_execution_result_to_file(
         flags |= O_APPEND;
     int fd = open(
         path.c_str(),
-
+        flags,
         0644);
 
     if (fd == -1)
