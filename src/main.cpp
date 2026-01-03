@@ -26,7 +26,9 @@ int main()
         bool in_quotes = false;
         bool in_double_quotes = false;
         bool in_backslash = false;
-        bool token_has_quotes = false;
+        bool redirect_stdout = false;
+        bool redirect_stderr = false;
+        ExecutionResult prev_res{"", "", -1};
         for (size_t i = 0; i < input.length(); ++i)
         {
             char c = input[i];
@@ -69,7 +71,6 @@ int main()
                 if (c == '"')
                     in_double_quotes = true;
                 in_quotes = true;
-                token_has_quotes = true;
             }
             else if ((c == '\'' || c == '"') && in_quotes)
             {
@@ -88,29 +89,37 @@ int main()
             }
             else if (isspace(c) && !in_quotes)
             {
-                if (!token.empty() || token_has_quotes)
+                if (!token.empty())
                 {
-                    tokens.push_back(token);
-                    token.clear();
-                    token_has_quotes = false;
+                    pushToken(token, tokens, redirect_stdout, redirect_stderr, prev_res);
                 }
+                else
+                    token += c;
             }
             else
             {
                 token += c;
             }
         }
-        if (!token.empty() || token_has_quotes)
+        if (!token.empty() || in_quotes)
         {
-            tokens.push_back(token);
+            pushToken(token, tokens, redirect_stdout, redirect_stderr, prev_res);
         }
 
         if (tokens.empty())
         {
             continue;
         }
-
-        handleCommand(tokens);
+        if (redirect_stderr)
+        {
+            write_execution_result_to_file(prev_res, tokens[0], true);
+        }
+        else if (redirect_stdout)
+        {
+            write_execution_result_to_file(prev_res, tokens[0], false);
+        }
+        else
+            handleCommand(tokens, redirect_stdout, redirect_stderr);
     }
 
     return 0;

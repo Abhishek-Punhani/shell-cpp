@@ -1,14 +1,39 @@
 #include <bits/stdc++.h>
 #include "headers/commands.hpp"
 #include <unistd.h>
+#include <fcntl.h>
+#include <sys/types.h>
 #include <sys/wait.h>
+#include <unistd.h>
 
 using namespace std;
+
+void pushToken(string &token, vector<string> &tokens, bool &redirect_stdout, bool &redirect_stderr, ExecutionResult &prev_res)
+{
+    if (token == ">" || token == "1>")
+    {
+        redirect_stdout = true;
+        prev_res = handleCommand(tokens, redirect_stdout, redirect_stderr);
+        tokens.clear();
+    }
+    else if (token == "2>")
+    {
+        redirect_stdout = true;
+        prev_res = handleCommand(tokens, redirect_stdout, redirect_stderr);
+        tokens.clear();
+    }
+    else
+    {
+        tokens.push_back(token);
+    }
+    token.clear();
+}
 
 bool isEmptyQuoted(const string &token)
 {
     return token.length() >= 2 && ((token[0] == '\'' && token[1] == '\'') || (token[0] == '"' && token[1] == '"')) && (token.substr(1, token.length() - 2).empty());
 }
+
 string is_executable(const string &token)
 {
     const char *path = getenv("PATH");
@@ -52,44 +77,93 @@ string parse_qoutes(const vector<string> &tokens)
     }
     return res;
 }
-void execute_executables(const string &exec_path, const vector<string> &tokens)
+
+ExecutionResult execute_executables(const string &exec_path, const vector<string> &tokens)
 {
+    int out_pipe[2];
+    int err_pipe[2];
+    pipe(out_pipe);
+    pipe(err_pipe);
+
     pid_t pid = fork();
     if (pid == 0)
-    { // Child process
+    {
+        // child: redirect stdout/stderr to pipes
+        dup2(out_pipe[1], STDOUT_FILENO);
+        dup2(err_pipe[1], STDERR_FILENO);
+
+        // close unused fds
+        close(out_pipe[0]);
+        close(out_pipe[1]);
+        close(err_pipe[0]);
+        close(err_pipe[1]);
+
+        // build argv
         vector<string> processed_args;
         vector<char *> args;
-
-        // argv[0] is the command name
         args.push_back(const_cast<char *>(tokens[0].c_str()));
-
-        // Process arguments individually using parse_qoutes logic
         for (size_t i = 1; i < tokens.size(); ++i)
         {
             vector<string> single_arg_vec = {"placeholder", tokens[i]};
-            string processed_token = parse_qoutes(single_arg_vec);
-            processed_args.push_back(processed_token);
+            processed_args.push_back(parse_qoutes(single_arg_vec));
         }
-
-        // Convert string vector to char* vector for execv
         for (auto &arg : processed_args)
-        {
             args.push_back(const_cast<char *>(arg.c_str()));
-        }
         args.push_back(nullptr);
 
         execv(exec_path.c_str(), args.data());
-        // If execv returns, an error occurred
-        cerr << "Failed to execute " << exec_path << endl;
-        exit(1);
+        _exit(127);
     }
-    else if (pid > 0)
-    { // Parent process
-        int status;
-        waitpid(pid, &status, 0);
-    }
-    else
+
+    // parent
+    close(out_pipe[1]);
+    close(err_pipe[1]);
+
+    string stdout_out;
+    string stderr_out;
+    char buf[4096];
+    ssize_t n;
+
+    // read stdout
+    while ((n = read(out_pipe[0], buf, sizeof(buf))) > 0)
+        stdout_out.append(buf, n);
+    // read stderr
+    while ((n = read(err_pipe[0], buf, sizeof(buf))) > 0)
+        stderr_out.append(buf, n);
+
+    close(out_pipe[0]);
+    close(err_pipe[0]);
+
+    int status = 0;
+    waitpid(pid, &status, 0);
+    int exit_code = -1;
+    if (WIFEXITED(status))
+        exit_code = WEXITSTATUS(status);
+
+    return ExecutionResult{stdout_out, stderr_out, exit_code};
+}
+
+void write_execution_result_to_file(
+    const ExecutionResult &result,
+    const std::string &path,
+    bool is_err)
+{
+    int fd = open(
+        path.c_str(),
+        O_WRONLY | O_CREAT | O_APPEND,
+        0644);
+
+    if (fd == -1)
     {
-        cerr << "Fork failed" << endl;
+        perror("open");
+        return;
     }
+
+    if (!result.out.empty() && !is_err)
+        write(fd, result.out.data(), result.out.size());
+
+    if (!result.err.empty() && is_err)
+        write(fd, result.err.data(), result.err.size());
+
+    close(fd);
 }
