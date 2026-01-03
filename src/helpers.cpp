@@ -16,7 +16,7 @@ void pushToken(string &token, vector<string> &tokens, bool &redirect_stdout, boo
         prev_res = handleCommand(tokens, redirect_stdout, redirect_stderr);
         tokens.clear();
         if (token == ">>" || token == "1>>")
-            override_stdout = true;
+            override_stdout = false;
     }
     else if (token == "2>" || token == "2>>")
     {
@@ -24,7 +24,7 @@ void pushToken(string &token, vector<string> &tokens, bool &redirect_stdout, boo
         prev_res = handleCommand(tokens, redirect_stdout, redirect_stderr);
         tokens.clear();
         if (token == "2>>")
-            override_stderr = true;
+            override_stderr = false;
     }
     else
     {

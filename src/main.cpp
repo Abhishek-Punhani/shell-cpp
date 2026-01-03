@@ -28,8 +28,8 @@ int main()
         bool in_backslash = false;
         bool redirect_stdout = false;
         bool redirect_stderr = false;
-        bool override_stdout = false;
-        bool override_stderr = false;
+        bool override_stdout = true;
+        bool override_stderr = true;
         ExecutionResult prev_res{"", "", -1};
         for (size_t i = 0; i < input.length(); ++i)
         {
