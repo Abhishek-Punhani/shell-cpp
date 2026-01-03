@@ -18,7 +18,7 @@ void pushToken(string &token, vector<string> &tokens, bool &redirect_stdout, boo
     }
     else if (token == "2>")
     {
-        redirect_stdout = true;
+        redirect_stderr = true;
         prev_res = handleCommand(tokens, redirect_stdout, redirect_stderr);
         tokens.clear();
     }
