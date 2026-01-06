@@ -27,6 +27,18 @@ int on_tab(int count, int key)
         if (tab_cnt == 1)
         {
             write(STDOUT_FILENO, "\a", 1);
+            bool all_start_with_first = true;
+            for (size_t i = 1; i < res.size(); ++i) {
+                if (res[i].find(res[0]) != 0) {
+                    all_start_with_first = false;
+                    break;
+                }
+            }
+            if (all_start_with_first) {
+                rl_replace_line(res[0].c_str(), 0);
+                rl_point = rl_end;
+                tab_cnt = 0;
+            }
         }
         else
         {
