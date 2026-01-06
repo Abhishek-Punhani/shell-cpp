@@ -1,8 +1,4 @@
-#include <bits/stdc++.h>
 #include "headers/commands.hpp"
-#include <unistd.h>
-#include <sys/wait.h>
-using namespace std;
 
 vector<string> shell_builtin_commands = {"echo", "type", "exit", "pwd", "cd"};
 

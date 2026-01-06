@@ -2,6 +2,18 @@
 #define COMMANDS_HPP
 
 #include <bits/stdc++.h>
+#include <readline/readline.h>
+#include <readline/history.h>
+#include <unistd.h>
+#include <sys/wait.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <sys/types.h>
+#include <unistd.h>
+
+// custom headers
+#include "bindings.hpp"
+
 using namespace std;
 
 struct ExecutionResult

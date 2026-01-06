@@ -1,20 +1,18 @@
-#include <bits/stdc++.h>
 #include "headers/commands.hpp"
 using namespace std;
-
 int main()
 {
     cout << std::unitbuf;
     cerr << std::unitbuf;
 
+    listen_bindings();
     while (true)
     {
-        cout << "$ ";
         string input;
-        if (!getline(cin, input))
-        {
+        char *line_c = readline("$ ");
+        if (!line_c)
             break;
-        }
+        input = line_c;
 
         if (input == "exit")
         {

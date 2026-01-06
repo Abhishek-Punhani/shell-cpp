@@ -1,10 +1,5 @@
-#include <bits/stdc++.h>
 #include "headers/commands.hpp"
-#include <unistd.h>
-#include <fcntl.h>
-#include <sys/types.h>
-#include <sys/wait.h>
-#include <unistd.h>
+
 
 using namespace std;
 
