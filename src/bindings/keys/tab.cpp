@@ -4,19 +4,16 @@ int on_tab(int count, int key)
 {
     string line(rl_line_buffer);
     int cursor = rl_point;
-    string completion = "";
-    if (line == "ec")
+    vs res = autocomplete(line);
+    if (res.size() == 0)
+        return 0;
+    else if (res.size() == 1)
     {
-        completion = "echo";
-    }
-    else if (line == "ex")
-    {
-        completion = "exit";
-    }
-    if (!completion.empty())
-    {
-        rl_replace_line(completion.c_str(), 0);
+        rl_replace_line(res[0].c_str(), 0);
         rl_point = rl_end;
+    }else{
+        cout<<endl;
+        print(res);
     }
     rl_redisplay();
     return 0;

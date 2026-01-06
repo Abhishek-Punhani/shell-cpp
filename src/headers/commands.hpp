@@ -16,6 +16,32 @@
 
 using namespace std;
 
+// custom definitions
+#define vi vector<int>
+#define vvi vector<vi>
+#define vs vector<string>
+#define vb vector<bool>
+#define pb push_back
+#define pii pair<int, int>
+#define sti set<int>
+#define vpi vector<pii>
+#define vst vector<sti>
+#define rep(i, n) for (int i = 0; i < n; i++)
+#define rep1(i, k, n) for (int i = k; i <= n; i++)
+#define rep2(i, k, n) for (int i = k; i >= n; i--)
+#define print(a)                          \
+    rep(i, a.size()) cout << a[i] << ' '; \
+    cout << endl;
+#define printvpi(a) \
+    rep(i, a.size()) cout << a[i].f << ' ' << a[i].s << endl;
+#define printset(a)                                \
+    for (auto it = a.begin(); it != a.end(); it++) \
+        cout << *it << ' ';                        \
+    cout << endl;
+#define all(a) a.begin(), a.end()
+
+// structs and classes
+
 struct ExecutionResult
 {
     std::string out;
@@ -23,6 +49,42 @@ struct ExecutionResult
     int exit_code;
 };
 
+struct Node
+{
+    Node *links[26];
+    bool flag;
+
+    Node();
+    ~Node();
+
+    bool containsKey(char ch) const;
+    void put(char ch, Node *node);
+    Node *get(char ch) const;
+    void setEnd();
+    bool isEnd() const;
+};
+
+class Trie
+{
+public:
+    Trie();
+    ~Trie();
+
+    void insert(const std::string &word);
+    Node *getPrefixNode(const std::string &input);
+    void get_prefix_matches(const std::string &input,
+                            std::vector<std::string> &res,
+                            std::string curr,
+                            Node *node);
+    void insertArray(const std::vector<std::string> &strings);
+    Node* getRoot();
+private:
+    Node *root;
+};
+
+// constants
+
+extern const vector<string> shell_builtin_commands;
 ExecutionResult handleCommand(const std::vector<std::string> &tokens, bool redirect_stdout, bool redirect_stderr);
 
 // command handlers
@@ -36,6 +98,6 @@ bool isEmptyQuoted(const string &token);
 string is_executable(const string &token);
 string parse_qoutes(const vector<string> &tokens);
 ExecutionResult execute_executables(const string &exec_path, const vector<string> &tokens);
-void pushToken(string &token, vector<string> &tokens, bool &redirect_stdout, bool &redirect_stderr, bool &override_stdout,bool &override_stderr, ExecutionResult &prev_res);
-void write_execution_result_to_file(const ExecutionResult &result, const std::string &path, bool is_err , bool override);
+void pushToken(string &token, vector<string> &tokens, bool &redirect_stdout, bool &redirect_stderr, bool &override_stdout, bool &override_stderr, ExecutionResult &prev_res);
+void write_execution_result_to_file(const ExecutionResult &result, const std::string &path, bool is_err, bool override);
 #endif
