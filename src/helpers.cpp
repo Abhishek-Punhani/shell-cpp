@@ -1,6 +1,5 @@
 #include "headers/commands.hpp"
 
-
 using namespace std;
 
 void pushToken(string &token, vector<string> &tokens, bool &redirect_stdout, bool &redirect_stderr, bool &override_stdout, bool &override_stderr, ExecutionResult &prev_res)
@@ -38,7 +37,7 @@ string is_executable(const string &token)
     const char *path = getenv("PATH");
     if (!path)
     {
-        return ""; // PATH not set
+        return "";
     }
     string path_str = path;
     stringstream ss(path_str);
@@ -47,7 +46,7 @@ string is_executable(const string &token)
     {
         string full_path = dir + "/" + token;
         if (access(full_path.c_str(), X_OK) == 0)
-        { // Check if executable
+        {
             return full_path;
         }
     }
@@ -170,3 +169,4 @@ void write_execution_result_to_file(const ExecutionResult &result, const std::st
 
     close(fd);
 }
+

@@ -1,7 +1,5 @@
 #include "headers/commands.hpp"
 
-const vector<string> shell_builtin_commands = {"echo", "type", "exit", "pwd", "cd"};
-
 ExecutionResult handleCommand(const vector<string> &tokens, bool redirect_stdout, bool redirect_stderr)
 {
     ExecutionResult r{"", "", -1};
