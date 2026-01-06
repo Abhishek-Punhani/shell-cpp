@@ -30,9 +30,18 @@ int on_tab(int count, int key)
         }
         else
         {
-            sort(all(res));
+            vs execs = autocomplete_executables(line);
+            if (execs.empty())
+                execs = res;
+            sort(all(execs));
             cout << endl;
-            print(res);
+            for (size_t i = 0; i < execs.size(); ++i)
+            {
+                if (i)
+                    cout << "  ";
+                cout << execs[i];
+            }
+            cout << endl;
             rl_on_new_line();
             rl_replace_line(line.c_str(), 0);
             rl_point = cursor;
