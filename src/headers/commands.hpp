@@ -10,6 +10,9 @@
 #include <fcntl.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <sstream>
+#include <cstdlib>
+#include <dirent.h>
 
 // custom headers
 #include "bindings.hpp"
@@ -51,7 +54,7 @@ struct ExecutionResult
 
 struct Node
 {
-    Node *links[26];
+    std::unordered_map<char, Node *> links;
     bool flag;
 
     Node();
@@ -77,14 +80,15 @@ public:
                             std::string curr,
                             Node *node);
     void insertArray(const std::vector<std::string> &strings);
-    Node* getRoot();
+    Node *getRoot();
+
 private:
     Node *root;
 };
 
 // constants
-
 extern const vector<string> shell_builtin_commands;
+
 ExecutionResult handleCommand(const std::vector<std::string> &tokens, bool redirect_stdout, bool redirect_stderr);
 
 // command handlers
@@ -100,4 +104,5 @@ string parse_qoutes(const vector<string> &tokens);
 ExecutionResult execute_executables(const string &exec_path, const vector<string> &tokens);
 void pushToken(string &token, vector<string> &tokens, bool &redirect_stdout, bool &redirect_stderr, bool &override_stdout, bool &override_stderr, ExecutionResult &prev_res);
 void write_execution_result_to_file(const ExecutionResult &result, const std::string &path, bool is_err, bool override);
+vector<string> get_path_executables();
 #endif

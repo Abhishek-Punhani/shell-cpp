@@ -141,7 +141,7 @@ ExecutionResult execute_executables(const string &exec_path, const vector<string
     return ExecutionResult{stdout_out, stderr_out, exit_code};
 }
 
-void write_execution_result_to_file(const ExecutionResult &result, const std::string &path, bool is_err, bool override)
+void write_execution_result_to_file(const ExecutionResult &result, const string &path, bool is_err, bool override)
 {
     int flags = O_WRONLY | O_CREAT;
     if (override)
@@ -170,3 +170,35 @@ void write_execution_result_to_file(const ExecutionResult &result, const std::st
     close(fd);
 }
 
+vector<string> get_path_executables() {
+    vector<string> result;
+    unordered_set<string> seen;
+
+    const char* env = getenv("PATH");
+    if (!env) return result;
+
+    string path(env);
+    stringstream ss(path);
+    string dir;
+
+    while (getline(ss, dir, ':')) {
+        if (dir.empty()) continue;
+
+        DIR* dp = opendir(dir.c_str());
+        if (!dp) continue;
+
+        dirent* entry;
+        while ((entry = readdir(dp)) != nullptr) {
+            string name = entry->d_name;
+            string full = dir + "/" + name;
+
+            if (access(full.c_str(), X_OK) == 0) {
+                if (seen.insert(name).second) {
+                    result.push_back(name);
+                }
+            }
+        }
+        closedir(dp);
+    }
+    return result;
+}

@@ -6,8 +6,8 @@ int on_tab(int count, int key)
     int cursor = rl_point;
     vs res = autocomplete(line);
     if (res.size() == 0)
-    {   
-        cout<<'\x07';
+    {
+        cout << '\x07';
         return 0;
     }
     else if (res.size() == 1)
@@ -20,6 +20,9 @@ int on_tab(int count, int key)
     {
         cout << endl;
         print(res);
+        rl_on_new_line();
+        rl_replace_line(line.c_str(), 0);
+        rl_point = cursor;
     }
     rl_redisplay();
     return 0;
