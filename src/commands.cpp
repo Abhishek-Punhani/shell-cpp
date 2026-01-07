@@ -173,5 +173,6 @@ ExecutionResult handleHistory(const vector<string> &tokens)
         {
             print_history(-1);
         }
+        return r;
     }
 }
