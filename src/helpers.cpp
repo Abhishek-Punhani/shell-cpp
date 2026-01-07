@@ -294,3 +294,18 @@ void tokenize(vs &tokens, Config &cfg, vector<vs> &pipelines, ExecutionResult &p
         pushToken(token, tokens, cfg, prev_res, pipelines);
     }
 }
+
+int string_to_number(const string &s)
+{
+    int res = 0;
+    if (s.empty())
+        return false;
+    for (char c : s)
+    {
+        if (!isdigit(c))
+            return -1;
+        else
+            res = res * 10 + (c-'0');
+    }
+    return res;
+}

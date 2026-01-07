@@ -13,7 +13,7 @@ int main()
         if (!line_c)
             break;
         input = line_c;
-
+        add_to_history(input);
         if (input == "exit")
         {
             break;
@@ -23,7 +23,7 @@ int main()
         Config cfg;
         vector<vs> pipelines;
         ExecutionResult prev_res{"", "", -1};
-        tokenize(tokens,cfg,pipelines,prev_res,input);
+        tokenize(tokens, cfg, pipelines, prev_res, input);
         if (pipelines.size() > 0)
         {
             if (!tokens.empty())

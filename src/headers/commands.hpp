@@ -104,6 +104,7 @@ ExecutionResult handleEcho(const std::vector<std::string> &tokens);
 ExecutionResult handleType(const std::vector<std::string> &tokens);
 ExecutionResult handlePwd();
 ExecutionResult handleCd(const std::vector<std::string> &tokens);
+ExecutionResult handleHistory(const vector<string> &tokens);
 
 // helpers
 bool isEmptyQuoted(const string &token);
@@ -114,6 +115,13 @@ void pushToken(string &token, vector<string> &tokens, Config &cfg, ExecutionResu
 void write_execution_result_to_file(const ExecutionResult &result, const std::string &path, bool is_err, bool override);
 vector<string> get_path_executables();
 void tokenize(vs &tokens, Config &cfg, vector<vs> &pipelines, ExecutionResult &prev_res, string &input);
+int string_to_number(const string &s);
+
 // pipelines
 void execute_pipelines(vector<vs> &pipeline);
+
+// history
+void add_to_history(string &s);
+void print_history(int last);
+
 #endif

@@ -20,6 +20,10 @@ ExecutionResult handleCommand(const vector<string> &tokens, bool redirect_stdout
     {
         r = handleCd(tokens);
     }
+    else if (tokens[0] == "history")
+    {
+        r = handleHistory(tokens);
+    }
     else
     {
         string exec_path = is_executable(tokens[0]);
@@ -139,4 +143,35 @@ ExecutionResult handleCd(const vector<string> &tokens)
         r.exit_code = 1;
     }
     return r;
+}
+
+ExecutionResult handleHistory(const vector<string> &tokens)
+{
+    ExecutionResult r{"", "", 0};
+
+    if (tokens.size() >= 3)
+    {
+        r.err = "history: too many arguments\n";
+        r.exit_code = 2;
+        return r;
+    }
+    else
+    {
+
+        if (tokens.size() == 2)
+        {
+            int last = string_to_number(tokens[1]);
+            if (last == -1)
+            {
+                r.err = "history: numeric argument required \n";
+                r.exit_code = 2;
+                return r;
+            }
+            print_history(last);
+        }
+        else
+        {
+            print_history(-1);
+        }
+    }
 }
