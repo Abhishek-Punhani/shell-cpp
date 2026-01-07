@@ -2,9 +2,14 @@
 
 using namespace std;
 
-void pushToken(string &token, vector<string> &tokens, bool &redirect_stdout, bool &redirect_stderr, bool &override_stdout, bool &override_stderr, ExecutionResult &prev_res)
+void pushToken(string &token, vector<string> &tokens, bool &redirect_stdout, bool &redirect_stderr, bool &override_stdout, bool &override_stderr, ExecutionResult &prev_res, vector<vs> &pipelines)
 {
-    if (token == ">" || token == "1>" || token == ">>" || token == "1>>")
+    if (token == "|")
+    {
+        pipelines.push_back(tokens);
+        tokens.clear();
+    }
+    else if (token == ">" || token == "1>" || token == ">>" || token == "1>>")
     {
         redirect_stdout = true;
         prev_res = handleCommand(tokens, redirect_stdout, redirect_stderr);
@@ -170,30 +175,38 @@ void write_execution_result_to_file(const ExecutionResult &result, const string 
     close(fd);
 }
 
-vector<string> get_path_executables() {
+vector<string> get_path_executables()
+{
     vector<string> result;
     unordered_set<string> seen;
 
-    const char* env = getenv("PATH");
-    if (!env) return result;
+    const char *env = getenv("PATH");
+    if (!env)
+        return result;
 
     string path(env);
     stringstream ss(path);
     string dir;
 
-    while (getline(ss, dir, ':')) {
-        if (dir.empty()) continue;
+    while (getline(ss, dir, ':'))
+    {
+        if (dir.empty())
+            continue;
 
-        DIR* dp = opendir(dir.c_str());
-        if (!dp) continue;
+        DIR *dp = opendir(dir.c_str());
+        if (!dp)
+            continue;
 
-        dirent* entry;
-        while ((entry = readdir(dp)) != nullptr) {
+        dirent *entry;
+        while ((entry = readdir(dp)) != nullptr)
+        {
             string name = entry->d_name;
             string full = dir + "/" + name;
 
-            if (access(full.c_str(), X_OK) == 0) {
-                if (seen.insert(name).second) {
+            if (access(full.c_str(), X_OK) == 0)
+            {
+                if (seen.insert(name).second)
+                {
                     result.push_back(name);
                 }
             }

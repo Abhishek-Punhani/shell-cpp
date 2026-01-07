@@ -28,6 +28,7 @@ int main()
         bool redirect_stderr = false;
         bool override_stdout = true;
         bool override_stderr = true;
+        vector<vs> pipelines;
         ExecutionResult prev_res{"", "", -1};
         for (size_t i = 0; i < input.length(); ++i)
         {
@@ -91,7 +92,7 @@ int main()
             {
                 if (!token.empty())
                 {
-                    pushToken(token, tokens, redirect_stdout, redirect_stderr, override_stdout, override_stderr, prev_res);
+                    pushToken(token, tokens, redirect_stdout, redirect_stderr, override_stdout, override_stderr, prev_res, pipelines);
                 }
             }
             else
@@ -101,9 +102,14 @@ int main()
         }
         if (!token.empty() || in_quotes)
         {
-            pushToken(token, tokens, redirect_stdout, redirect_stderr, override_stdout, override_stderr, prev_res);
+            pushToken(token, tokens, redirect_stdout, redirect_stderr, override_stdout, override_stderr, prev_res, pipelines);
         }
-
+        if (pipelines.size() > 0)
+        {
+           if(!tokens.empty()) pipelines.push_back(tokens);
+           execute_pipelines(pipelines);
+           continue;
+        }
         if (tokens.empty())
         {
             continue;

@@ -88,7 +88,7 @@ private:
 
 // constants
 extern const vector<string> shell_builtin_commands;
-
+extern const vector<string> custom_commands;
 ExecutionResult handleCommand(const std::vector<std::string> &tokens, bool redirect_stdout, bool redirect_stderr);
 
 // command handlers
@@ -102,7 +102,10 @@ bool isEmptyQuoted(const string &token);
 string is_executable(const string &token);
 string parse_qoutes(const vector<string> &tokens);
 ExecutionResult execute_executables(const string &exec_path, const vector<string> &tokens);
-void pushToken(string &token, vector<string> &tokens, bool &redirect_stdout, bool &redirect_stderr, bool &override_stdout, bool &override_stderr, ExecutionResult &prev_res);
+void pushToken(string &token, vector<string> &tokens, bool &redirect_stdout, bool &redirect_stderr, bool &override_stdout, bool &override_stderr, ExecutionResult &prev_res,vector<vs> &pipelines);
 void write_execution_result_to_file(const ExecutionResult &result, const std::string &path, bool is_err, bool override);
 vector<string> get_path_executables();
+
+// pipelines
+void execute_pipelines(vector<vs> &pipeline);
 #endif
