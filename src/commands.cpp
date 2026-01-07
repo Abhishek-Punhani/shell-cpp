@@ -148,9 +148,16 @@ ExecutionResult handleCd(const vector<string> &tokens)
 ExecutionResult handleHistory(const vector<string> &tokens)
 {
     ExecutionResult r{"", "", 0};
-
     if (tokens.size() >= 3)
     {
+        if (tokens.size() == 3 && (tokens[1] == "-r" || tokens[1] == "-w"))
+        {
+            if (tokens[1] == "-r")
+                load_history(tokens[2]);
+            else
+                write_history(tokens[2]);
+            return r;
+        }
         r.err = "history: too many arguments\n";
         r.exit_code = 2;
         return r;

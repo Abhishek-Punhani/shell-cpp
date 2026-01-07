@@ -97,9 +97,10 @@ private:
 // constants
 extern const vector<string> shell_builtin_commands;
 extern const vector<string> custom_commands;
-ExecutionResult handleCommand(const std::vector<std::string> &tokens, bool redirect_stdout, bool redirect_stderr);
+extern const string HISTORY_FILE;
 
 // command handlers
+ExecutionResult handleCommand(const std::vector<std::string> &tokens, bool redirect_stdout, bool redirect_stderr);
 ExecutionResult handleEcho(const std::vector<std::string> &tokens);
 ExecutionResult handleType(const std::vector<std::string> &tokens);
 ExecutionResult handlePwd();
@@ -123,5 +124,7 @@ void execute_pipelines(vector<vs> &pipeline);
 // history
 void add_to_history(string &s);
 void print_history(int last);
+void load_history(string path);
+void write_history(string path);
 
 #endif

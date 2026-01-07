@@ -4,7 +4,7 @@ int main()
 {
     cout << std::unitbuf;
     cerr << std::unitbuf;
-
+    load_history(HISTORY_FILE);
     listen_bindings();
     while (true)
     {
@@ -15,7 +15,8 @@ int main()
         input = line_c;
         add_to_history(input);
         if (input == "exit")
-        {
+        {   
+            write_history(HISTORY_FILE);
             break;
         }
 
