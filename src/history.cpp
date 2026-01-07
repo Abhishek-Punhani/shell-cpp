@@ -9,9 +9,8 @@ void check_path(string &path)
 {
     if (path == HISTORY_FILE)
     {
-        const char *home = getenv("HOME");
         const char *hispath = getenv("HISTFILE");
-        if (!home)
+        if (!hispath)
         {
             return;
         }
