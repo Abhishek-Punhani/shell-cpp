@@ -122,12 +122,8 @@ void print_history(int last)
 void write_history(string path, bool append)
 {
     check_path(path);
-
-    int fd = open(path.c_str(), O_WRONLY | O_CREAT , 0644);
-    if(append){
-        fd|=O_APPEND;
-    }
-    else fd|=O_TRUNC;
+    int flags = O_WRONLY | O_CREAT | (append ? O_APPEND : O_TRUNC);
+    int fd = open(path.c_str(), flags, 0644);
     if (fd < 0)
     {
         perror("history_write");
