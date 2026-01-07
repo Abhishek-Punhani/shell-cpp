@@ -119,11 +119,15 @@ void print_history(int last)
         }
     }
 }
-void write_history(string path)
+void write_history(string path, bool append)
 {
     check_path(path);
 
-    int fd = open(path.c_str(), O_WRONLY | O_CREAT | O_APPEND, 0644);
+    int fd = open(path.c_str(), O_WRONLY | O_CREAT , 0644);
+    if(append){
+        fd|=O_APPEND;
+    }
+    else fd|=O_TRUNC;
     if (fd < 0)
     {
         perror("history_write");

@@ -150,12 +150,15 @@ ExecutionResult handleHistory(const vector<string> &tokens)
     ExecutionResult r{"", "", 0};
     if (tokens.size() >= 3)
     {
-        if (tokens.size() == 3 && (tokens[1] == "-r" || tokens[1] == "-w"))
+        if (tokens.size() == 3 && (tokens[1] == "-r" || tokens[1] == "-w") || tokens[1] == "-a")
         {
             if (tokens[1] == "-r")
                 load_history(tokens[2]);
             else
-                write_history(tokens[2]);
+            {
+                bool append = (tokens[1] == "-a");
+                write_history(tokens[2],append);
+            }
             return r;
         }
         r.err = "history: too many arguments\n";

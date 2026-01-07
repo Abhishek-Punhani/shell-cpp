@@ -16,7 +16,7 @@ int main()
         add_to_history(input);
         if (input == "exit")
         {   
-            write_history(HISTORY_FILE);
+            write_history(HISTORY_FILE,true);
             break;
         }
 

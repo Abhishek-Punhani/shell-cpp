@@ -125,6 +125,6 @@ void execute_pipelines(vector<vs> &pipeline);
 void add_to_history(string &s);
 void print_history(int last);
 void load_history(string path);
-void write_history(string path);
+void write_history(string path,bool append);
 
 #endif
