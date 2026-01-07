@@ -3,12 +3,9 @@
 void handle_update()
 {
     string to_replace = get_history_idx();
-    if (!to_replace.empty())
-    {
-        rl_replace_line(to_replace.c_str(), 0);
-        rl_redisplay();
-        rl_point = rl_end;
-    }
+    rl_replace_line(to_replace.c_str(), 0);
+    rl_redisplay();
+    rl_point = rl_end;
 }
 int previous_input(int count, int key)
 {

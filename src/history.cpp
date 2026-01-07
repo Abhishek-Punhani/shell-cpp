@@ -2,25 +2,43 @@
 
 vs history;
 int history_idx = -1;
-
+string curr = "";
 void add_to_history(string &s)
 {
-    history.pb(s);
-    history_idx = history.size() - 1;
+    if (!s.empty())
+        history.pb(s);
+    history_idx = -1;
 }
 
 void inc_history_idx()
 {
+
     if (!history.empty() && history_idx != -1)
     {
-        history_idx++;
+        string line(rl_line_buffer);
+        history[history_idx] = line;
+        if (history_idx < (int)history.size() - 1)
+            history_idx++;
+        else
+            history_idx = -1;
+        return;
     }
 }
 
 void dec_history_idx()
 {
-    if (!history.empty() && history_idx != 0)
+    if (history.empty())
+        return;
+
+    string line(rl_line_buffer);
+    if (history_idx == -1)
     {
+        curr = line;
+        history_idx = (int)history.size() - 1;
+    }
+    else if (history_idx > 0)
+    {
+        history[history_idx] = line;
         history_idx--;
     }
 }
@@ -31,7 +49,8 @@ string get_history_idx()
     {
         return history[history_idx];
     }
-    return "";
+    else
+        return curr;
 }
 
 void print_history(int last)
