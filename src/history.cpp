@@ -1,10 +1,37 @@
 #include "headers/commands.hpp"
 
 vs history;
+int history_idx = -1;
 
 void add_to_history(string &s)
 {
     history.pb(s);
+    history_idx = history.size() - 1;
+}
+
+void inc_history_idx()
+{
+    if (!history.empty() && history_idx != -1)
+    {
+        history_idx++;
+    }
+}
+
+void dec_history_idx()
+{
+    if (!history.empty() && history_idx != 0)
+    {
+        history_idx--;
+    }
+}
+
+string get_history_idx()
+{
+    if (!history.empty() && history_idx != -1)
+    {
+        return history[history_idx];
+    }
+    return "";
 }
 
 void print_history(int last)
