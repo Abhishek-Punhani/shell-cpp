@@ -47,9 +47,17 @@ using namespace std;
 
 struct ExecutionResult
 {
-    std::string out;
-    std::string err;
+    string out;
+    string err;
     int exit_code;
+};
+
+class Config
+{
+public:
+    bool in_quotes, in_double_quotes, in_backslash, redirect_stdout, redirect_stderr, override_stdout, override_stderr;
+    Config();
+    void reset();
 };
 
 struct Node
@@ -102,10 +110,10 @@ bool isEmptyQuoted(const string &token);
 string is_executable(const string &token);
 string parse_qoutes(const vector<string> &tokens);
 ExecutionResult execute_executables(const string &exec_path, const vector<string> &tokens);
-void pushToken(string &token, vector<string> &tokens, bool &redirect_stdout, bool &redirect_stderr, bool &override_stdout, bool &override_stderr, ExecutionResult &prev_res,vector<vs> &pipelines);
+void pushToken(string &token, vector<string> &tokens, Config &cfg, ExecutionResult &prev_res, vector<vs> &pipelines);
 void write_execution_result_to_file(const ExecutionResult &result, const std::string &path, bool is_err, bool override);
 vector<string> get_path_executables();
-
+void tokenize(vs &tokens, Config &cfg, vector<vs> &pipelines, ExecutionResult &prev_res, string &input);
 // pipelines
 void execute_pipelines(vector<vs> &pipeline);
 #endif

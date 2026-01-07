@@ -2,7 +2,7 @@
 
 using namespace std;
 
-void pushToken(string &token, vector<string> &tokens, bool &redirect_stdout, bool &redirect_stderr, bool &override_stdout, bool &override_stderr, ExecutionResult &prev_res, vector<vs> &pipelines)
+void pushToken(string &token, vector<string> &tokens, Config &cfg, ExecutionResult &prev_res, vector<vs> &pipelines)
 {
     if (token == "|")
     {
@@ -11,19 +11,19 @@ void pushToken(string &token, vector<string> &tokens, bool &redirect_stdout, boo
     }
     else if (token == ">" || token == "1>" || token == ">>" || token == "1>>")
     {
-        redirect_stdout = true;
-        prev_res = handleCommand(tokens, redirect_stdout, redirect_stderr);
+        cfg.redirect_stdout = true;
+        prev_res = handleCommand(tokens, cfg.redirect_stdout, cfg.redirect_stderr);
         tokens.clear();
         if (token == ">>" || token == "1>>")
-            override_stdout = false;
+            cfg.override_stdout = false;
     }
     else if (token == "2>" || token == "2>>")
     {
-        redirect_stderr = true;
-        prev_res = handleCommand(tokens, redirect_stdout, redirect_stderr);
+        cfg.redirect_stderr = true;
+        prev_res = handleCommand(tokens, cfg.redirect_stdout, cfg.redirect_stderr);
         tokens.clear();
         if (token == "2>>")
-            override_stderr = false;
+            cfg.override_stderr = false;
     }
     else
     {
@@ -214,4 +214,83 @@ vector<string> get_path_executables()
         closedir(dp);
     }
     return result;
+}
+
+void tokenize(vs &tokens, Config &cfg, vector<vs> &pipelines, ExecutionResult &prev_res, string &input)
+{
+    string token = "";
+    for (size_t i = 0; i < input.length(); ++i)
+    {
+        char c = input[i];
+        if (cfg.in_backslash)
+        {
+            if (cfg.in_double_quotes)
+            {
+                if (c == '$' || c == '`' || c == '"' || c == '\\' || c == '\n')
+                {
+                    token += c;
+                }
+                else
+                {
+                    token += '\\';
+                    token += c;
+                }
+            }
+            else
+            {
+                token += c;
+            }
+            cfg.in_backslash = false;
+            continue;
+        }
+        if (c == '\\')
+        {
+            if (!cfg.in_quotes || cfg.in_double_quotes)
+            {
+                cfg.in_backslash = true;
+                continue;
+            }
+            else
+            {
+                token += c;
+                continue;
+            }
+        }
+        if ((c == '\'' || c == '"') && !cfg.in_quotes)
+        {
+            if (c == '"')
+                cfg.in_double_quotes = true;
+            cfg.in_quotes = true;
+        }
+        else if ((c == '\'' || c == '"') && cfg.in_quotes)
+        {
+            if (c == '\'' && cfg.in_double_quotes)
+            {
+                token += c;
+                continue;
+            }
+            if (c == '"' && cfg.in_quotes && !cfg.in_double_quotes)
+            {
+                token += c;
+                continue;
+            }
+            cfg.in_quotes = false;
+            cfg.in_double_quotes = false;
+        }
+        else if (isspace(c) && !cfg.in_quotes)
+        {
+            if (!token.empty())
+            {
+                pushToken(token, tokens, cfg, prev_res, pipelines);
+            }
+        }
+        else
+        {
+            token += c;
+        }
+    }
+    if (!token.empty() || cfg.in_quotes)
+    {
+        pushToken(token, tokens, cfg, prev_res, pipelines);
+    }
 }
