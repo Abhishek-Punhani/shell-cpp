@@ -123,7 +123,7 @@ void write_history(string path)
 {
     check_path(path);
 
-    int fd = open(path.c_str(), O_WRONLY | O_CREAT | O_TRUNC, 0644);
+    int fd = open(path.c_str(), O_WRONLY | O_CREAT | O_APPEND, 0644);
     if (fd < 0)
     {
         perror("history_write");
