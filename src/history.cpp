@@ -18,7 +18,7 @@ void print_history(int last)
         int idx = max(0, (int)history.size() - last);
         rep1(i, idx, (int)history.size() - 1)
         {
-            cout << i << " " << history[i] << endl;
+            cout << "  " << i + 1 << " " << history[i] << endl;
         }
     }
 }
