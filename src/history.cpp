@@ -2,18 +2,21 @@
 
 vs history;
 int history_idx = -1;
+size_t history_written_upto = 0;
+
 string curr = "";
 void check_path(string &path)
 {
     if (path == HISTORY_FILE)
     {
         const char *home = getenv("HOME");
+        const char *hispath = getenv("HISTFILE");
         if (!home)
         {
             return;
         }
 
-        path = string(home) + "/" + path;
+        path = string(hispath);
     }
 }
 void load_history(string path)
@@ -52,6 +55,7 @@ void load_history(string path)
         history.pb(curr);
     }
     close(fd);
+    history_written_upto = history.size();
 }
 
 void add_to_history(string &s)
@@ -120,9 +124,10 @@ void print_history(int last)
     }
 }
 void write_history(string path, bool append)
-{
+{   
     check_path(path);
     int flags = O_WRONLY | O_CREAT | (append ? O_APPEND : O_TRUNC);
+    size_t start = append ? history_written_upto : 0;
     int fd = open(path.c_str(), flags, 0644);
     if (fd < 0)
     {
@@ -130,9 +135,10 @@ void write_history(string path, bool append)
         return;
     }
 
-    for (const auto &cmd : history)
+    for (size_t i = start; i < history.size(); i++)
+
     {
-        ssize_t n = write(fd, cmd.data(), cmd.size());
+        ssize_t n = write(fd, history[i].data(), history[i].size());
         if (n < 0)
         {
             perror("write");
@@ -142,4 +148,5 @@ void write_history(string path, bool append)
     }
 
     close(fd);
+    history_written_upto=history.size();
 }
