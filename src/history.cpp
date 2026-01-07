@@ -9,13 +9,13 @@ void check_path(string &path)
 {
     if (path == HISTORY_FILE)
     {
-        const char *hispath = getenv("HISTFILE");
-        if (!hispath)
+        const char *home = getenv("HOME");
+        if (!home)
         {
             return;
         }
 
-        path = string(hispath);
+        path = string(home) + "/" + path;
     }
 }
 void load_history(string path)
@@ -123,7 +123,7 @@ void print_history(int last)
     }
 }
 void write_history(string path, bool append)
-{   
+{
     check_path(path);
     int flags = O_WRONLY | O_CREAT | (append ? O_APPEND : O_TRUNC);
     size_t start = append ? history_written_upto : 0;
@@ -147,5 +147,5 @@ void write_history(string path, bool append)
     }
 
     close(fd);
-    history_written_upto=history.size();
+    history_written_upto = history.size();
 }
