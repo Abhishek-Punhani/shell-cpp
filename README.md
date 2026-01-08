@@ -1,34 +1,113 @@
-[![progress-banner](https://backend.codecrafters.io/progress/shell/22d9c624-5554-4051-bed5-b5f77a6e8130)](https://app.codecrafters.io/users/codecrafters-bot?r=2qF)
+# Custom Shell in C++
 
-This is a starting point for C++ solutions to the
-["Build Your Own Shell" Challenge](https://app.codecrafters.io/courses/shell/overview).
+[![C++](https://img.shields.io/badge/language-C%2B%2B-orange)](https://isocpp.org)
+[![CMake](https://img.shields.io/badge/build-CMake-blue)](https://cmake.org)
+[![vcpkg](https://img.shields.io/badge/package%20manager-vcpkg-green)](https://vcpkg.io)
+[![Linux](https://img.shields.io/badge/platform-Linux-lightgrey)](https://www.linux.org/)
 
-In this challenge, you'll build your own POSIX compliant shell that's capable of
-interpreting shell commands, running external programs and builtin commands like
-cd, pwd, echo and more. Along the way, you'll learn about shell command parsing,
-REPLs, builtin commands, and more.
+**Tags:** `shell` `cpp` `posix` `command-line` `interactive-shell`
 
-**Note**: If you're viewing this repo on GitHub, head over to
-[codecrafters.io](https://codecrafters.io) to try the challenge.
+A POSIX-compliant interactive shell implemented in C++ that supports command parsing, builtin commands, external executables, pipelines, I/O redirection, tab completion, and history navigation.
 
-# Passing the first stage
+## Features
 
-The entry point for your `shell` implementation is in `src/main.cpp`. Study and
-uncomment the relevant code, and push your changes to pass the first stage:
+- **REPL (Read-Eval-Print Loop):** Interactive command execution
+- **Command Parsing:** Handles single/double quotes and backslash escapes
+- **Builtin Commands:** echo, type, pwd, cd, history, and more
+- **External Program Execution:** Launches programs with correct argv and environment
+- **I/O Redirection:** Supports stdout/stderr redirection (>, >>, 2>, 2>>)
+- **Pipelines:** Command chaining with pipes
+- **Tab Completion:** Autocomplete for builtins and executables using GNU Readline
+- **History Navigation:** Up/down arrow navigation with persistent history
 
-```sh
-git commit -am "pass 1st stage" # any msg
-git push origin master
+## Getting Started
+
+### Prerequisites
+
+- CMake (version 3.10 or higher)
+- C++ compiler (g++ or clang++)
+- vcpkg for dependency management
+- GNU Readline library
+
+### Installation
+
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/Abhishek-Punhani/shell-cpp.git
+   cd shell-cpp
+   ```
+
+2. Install dependencies using vcpkg:
+
+   ```bash
+   vcpkg install
+   ```
+
+3. Build the project:
+   ```bash
+   make build
+   ```
+
+### Usage
+
+Run the interactive shell:
+
+```bash
+make run
 ```
 
-Time to move on to the next stage!
+Or directly:
 
-# Stage 2 & beyond
+```bash
+./start.sh
+```
 
-Note: This section is for stages 2 and beyond.
+## Development
 
-1. Ensure you have `cmake` installed locally
-1. Run `./your_program.sh` to run your program, which is implemented in
-   `src/main.cpp`.
-1. Commit your changes and run `git push origin master` to submit your solution
-   to CodeCrafters. Test output will be streamed to your terminal.
+### Building
+
+Use the provided Makefile for easy building:
+
+```bash
+make build      # Configure and build
+make clean      # Clean build artifacts
+make run        # Build and run the shell
+```
+
+### Manual Build
+
+```bash
+mkdir -p build
+cd build
+cmake ..
+make -j$(nproc)
+```
+
+## Examples
+
+```bash
+$ echo "Hello, World!"
+Hello, World!
+
+$ ls -la | grep "\.cpp$"
+commands.cpp
+main.cpp
+
+$ cat file.txt > output.txt
+$ history
+1 echo "Hello"
+2 ls
+```
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request. Keep changes focused and well-documented.
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Acknowledgments
+
+Built with modern C++ and POSIX system calls for educational purposes.
