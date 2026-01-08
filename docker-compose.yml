@@ -1,0 +1,8 @@
+services:
+  shell:
+    build: .
+    stdin_open: true
+    tty: true
+    container_name: shell-cpp
+    volumes:
+      - ./.myshell_history:/app/.myshell_history

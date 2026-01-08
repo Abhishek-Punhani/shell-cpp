@@ -5,8 +5,6 @@
 [![vcpkg](https://img.shields.io/badge/package%20manager-vcpkg-green)](https://vcpkg.io)
 [![Linux](https://img.shields.io/badge/platform-Linux-lightgrey)](https://www.linux.org/)
 
-**Tags:** `shell` `cpp` `posix` `command-line` `interactive-shell`
-
 A POSIX-compliant interactive shell implemented in C++ that supports command parsing, builtin commands, external executables, pipelines, I/O redirection, tab completion, and history navigation.
 
 ## Features
@@ -51,17 +49,26 @@ A POSIX-compliant interactive shell implemented in C++ that supports command par
 
 ### Usage
 
-Run the interactive shell:
+Build and run the interactive shell:
 
-```bash
-make run
-```
+- Using Makefile:
 
-Or directly:
+  ```bash
+  make build
+  make run
+  ```
 
-```bash
-./start.sh
-```
+- Directly:
+
+  ```bash
+  make build
+  ./start.sh
+  ```
+
+- Using Docker Compose:
+  ```bash
+  make docker-up
+  ```
 
 ## Development
 
